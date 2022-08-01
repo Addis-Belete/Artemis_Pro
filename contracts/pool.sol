@@ -10,4 +10,10 @@ contract Pool {
         underyling = IERC20(_predefinedTokenAddress);
         receiptToken = receiptTokensAddress;
     }
+
+    struct userInfo {
+        uint256 amount;
+        uint256 deposit_time;
+        bool isDeposited;
+    }
 }

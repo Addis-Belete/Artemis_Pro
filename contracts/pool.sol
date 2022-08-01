@@ -17,4 +17,11 @@ contract Pool {
         bool isDeposited;
     }
     mapping(address => userInfo) public userData;
+
+    /*
+@dev - Is a function used to deposit predefined token to the contract
+@param amount - amount of predefined token
+*/
+
+    function deposit(uint256 amount) public {}
 }

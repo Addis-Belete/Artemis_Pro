@@ -16,4 +16,5 @@ contract Pool {
         uint256 deposit_time;
         bool isDeposited;
     }
+    mapping(address => userInfo) public userData;
 }

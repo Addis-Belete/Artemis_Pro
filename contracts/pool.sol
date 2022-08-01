@@ -2,9 +2,17 @@
 pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
+interface IReceiptToken {
+    function mint(uint256 amount, address to) external;
+
+    function burn(uint256 amount, address from) external;
+
+    function balanceOf(address account) external view returns (uint256);
+}
+
 contract Pool {
     IERC20 public underyling; // any ERC20 predefined token
-    address public receiptToken; //receipt token
+    IReceiptToken public receiptToken; //receipt token
 
     constructor(address _predefinedTokenAddress, address receiptTokensAddress) {
         underyling = IERC20(_predefinedTokenAddress);
@@ -38,6 +46,6 @@ contract Pool {
         } else {
             userData[msg.sender] = userInfo(amount, block.timestamp, true);
         }
-        IreceiptToken(receiptTokenAddress).mint(amount, msg.sender);
+        receiptToken.mint(amount, msg.sender);
     }
 }

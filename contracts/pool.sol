@@ -11,11 +11,11 @@ interface IReceiptToken {
 }
 
 contract Pool {
-    IERC20 public underyling; // any ERC20 predefined token
+    IERC20 public underlying; // any ERC20 predefined token
     IReceiptToken public receiptToken; //receipt token
 
     constructor(address _predefinedTokenAddress, address receiptTokensAddress) {
-        underyling = IERC20(_predefinedTokenAddress);
+        underlying = IERC20(_predefinedTokenAddress);
         receiptToken = IReceiptToken(receiptTokensAddress);
     }
 
@@ -33,10 +33,10 @@ contract Pool {
 
     function deposit(uint256 amount) public {
         require(
-            underyling.balanceOf(msg.sender) >= amount,
+            underlying.balanceOf(msg.sender) >= amount,
             "You don't have enough amount to withdraw"
         );
-        underyling.transfer(address(this), amount);
+        underlying.transfer(address(this), amount);
         if (userData[msg.sender].isDeposited == true) {
             uint256 initialAmount = userData[msg.sender].amount;
             uint256 initialTime = userData[msg.sender].deposit_time;
@@ -47,6 +47,40 @@ contract Pool {
             userData[msg.sender] = userInfo(amount, block.timestamp, true);
         }
         receiptToken.mint(amount, msg.sender);
+    }
+
+    /*
+@dev - Function used to withdraw funds from the contract
+@param amount - amount of receipt token owner wants to redeem
+@param owner - address of owner
+
+*/
+    function withdraw(uint256 amount, address owner) public {
+        require(
+            receiptToken.balanceOf(owner) >= amount,
+            "you don't have enough amount to redeem"
+        );
+        require(owner != address(0), "Invalid address");
+        uint256 userBalance = userData[owner].amount;
+        uint256 initialTime = userData[owner].deposit_time;
+        uint256 reward = calculateReward(userBalance, initialTime);
+        userData[owner].amount += reward;
+
+        if (amount == receiptToken.balanceOf(owner)) {
+            userData[owner].amount = 0;
+            userData[owner].isDeposited = false;
+            underlying.transferFrom(
+                address(this),
+                owner,
+                userData[owner].amount
+            );
+        } else {
+            uint256 amountToWithdraw = calculareShare(amount, owner);
+            userData[owner].amount -= amountToWithdraw;
+            userData[owner].deposit_time = block.timestamp;
+            underlying.transferFrom(address(this), owner, amountToWithdraw);
+        }
+        receiptToken.burn(amount, owner);
     }
 
     /*
@@ -71,7 +105,7 @@ contract Pool {
 @param owner - address of the owner
 */
     function calculareShare(uint256 share, address owner)
-        public
+        private
         view
         returns (uint256)
     {

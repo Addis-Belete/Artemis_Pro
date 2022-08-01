@@ -8,14 +8,11 @@ Example of ERC20 Token contract used to test the pool
 contract DAIToken is ERC20 {
     constructor() ERC20("Predefined token", "PT") {}
 
-    /*
-@notice - is used to mint receipt token
-*/
     function mint(uint256 amount, address to) public {
-        _mint(to, amount * 10**decimals());
+        _mint(to, amount);
     }
 
     function burn(uint256 amount, address from) public {
-        _burn(from, amount * 10**decimals());
+        _burn(from, amount);
     }
 }

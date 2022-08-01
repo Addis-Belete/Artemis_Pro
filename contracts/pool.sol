@@ -64,4 +64,20 @@ contract Pool {
         uint256 duration = endTime - startTime;
         reward = (amount * duration * 3) / 600;
     }
+
+    /*
+@notice - Function used to convert the amount of receipt token to predefined token
+@param share - the amount of receipt token to redeem
+@param owner - address of the owner
+*/
+    function calculareShare(uint256 share, address owner)
+        public
+        view
+        returns (uint256)
+    {
+        uint256 fullAmount = userData[owner].amount;
+        uint256 totalShare = receiptToken.balanceOf(owner);
+        uint256 amountToBeWithdrawed = (fullAmount * share) / totalShare;
+        return amountToBeWithdrawed;
+    }
 }

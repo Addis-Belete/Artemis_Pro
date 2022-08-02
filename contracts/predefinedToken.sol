@@ -4,6 +4,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 /*
 Example of ERC20 Token contract used to test the pool
+Assume it is DAI Token
 */
 contract DAIToken is ERC20 {
     constructor() ERC20("Predefined token", "PT") {}

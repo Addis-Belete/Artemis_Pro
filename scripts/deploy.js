@@ -7,23 +7,32 @@
 const hre = require("hardhat");
 
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
-  const unlockTime = currentTimestampInSeconds + ONE_YEAR_IN_SECS;
+	/*
+			Deploy receipt token
+			*/
+	const ReceiptToken = await ethers.getContractFactory("receiptToken");
+	const receiptToken = await ReceiptToken.deploy();
+	await receiptToken.deployed();
+	/*
+			Deploy predefined toke which is used for test purpose or to use instead of Real one.
+			*/
+	const DAI = await ethers.getContractFactory("DAIToken")
+	const dai = await DAI.deploy();
+	await dai.deployed();
 
-  const lockedAmount = hre.ethers.utils.parseEther("1");
+	/*
+			Deploy Pool contract
+			*/
+	const Pool = await ethers.getContractFactory("Pool");
+	const pool = await Pool.deploy(dai.address, receiptToken.address);
+	await pool.deployed();
+	console.log("pool deployed to -->", pool.address);
 
-  const Lock = await hre.ethers.getContractFactory("Lock");
-  const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
-
-  await lock.deployed();
-
-  console.log("Lock with 1 ETH deployed to:", lock.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
 // and properly handle errors.
 main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
+	console.error(error);
+	process.exitCode = 1;
 });

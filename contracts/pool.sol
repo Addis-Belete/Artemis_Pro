@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 interface IReceiptToken {
     function mint(uint256 amount, address to) external;
@@ -10,7 +11,10 @@ interface IReceiptToken {
     function balanceOf(address account) external view returns (uint256);
 }
 
+contract Account{}
+
 contract Pool {
+    using SafeERC20 for IERC20;
     IERC20 public underlying; // any ERC20 predefined token
     IReceiptToken public receiptToken; //receipt token
 

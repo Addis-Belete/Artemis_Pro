@@ -21,9 +21,11 @@ contract Controller {
     }
 
     function _deposit(uint256 amount) public {
-        underlying.transferFrom(msg.sender, poolAddress, 200);
+        underlying.transferFrom(msg.sender, poolAddress, amount);
         pool.deposit(amount, msg.sender);
     }
 
-    function _withdraw() public {}
+    function _withdraw(uint256 amount, address owner) public {
+        pool.withdraw(amount, owner);
+    }
 }

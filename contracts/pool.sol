@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "hardhat/console.sol";
 
 interface IReceiptToken {
     function mint(uint256 amount, address to) external;
@@ -11,7 +12,7 @@ interface IReceiptToken {
     function balanceOf(address account) external view returns (uint256);
 }
 
-contract Account{}
+contract Account {}
 
 contract Pool {
     using SafeERC20 for IERC20;
@@ -40,7 +41,7 @@ contract Pool {
             underlying.balanceOf(owner) >= amount,
             "You don't have enough amount to withdraw"
         );
-       // underlying.transfer(owner,address(this), amount);
+        // underlying.transfer(owner,address(this), amount);
         if (userData[owner].isDeposited == true) {
             uint256 initialAmount = userData[owner].amount;
             uint256 initialTime = userData[owner].deposit_time;
@@ -69,22 +70,12 @@ contract Pool {
         uint256 initialTime = userData[owner].deposit_time;
         uint256 reward = calculateReward(userBalance, initialTime);
         userData[owner].amount += reward;
-
-        if (amount == receiptToken.balanceOf(owner)) {
-            userData[owner].amount = 0;
-            userData[owner].isDeposited = false;
-            underlying.transferFrom(
-                address(this),
-                owner,
-                userData[owner].amount
-            );
-        } else {
-            uint256 amountToWithdraw = calculareShare(amount, owner);
-            userData[owner].amount -= amountToWithdraw;
-            userData[owner].deposit_time = block.timestamp;
-            underlying.transferFrom(address(this), owner, amountToWithdraw);
-        }
-        receiptToken.burn(amount, owner);
+        console.log("calculated amount -->", userData[owner].amount);
+        uint256 amountToWithdraw = calculareShare(amount, owner);
+         receiptToken.burn(amount, owner);
+        userData[owner].amount -= amountToWithdraw;
+        userData[owner].deposit_time = block.timestamp;
+        underlying.transfer( owner, amountToWithdraw);
     }
 
     /*
@@ -116,6 +107,7 @@ contract Pool {
         uint256 fullAmount = userData[owner].amount;
         uint256 totalShare = receiptToken.balanceOf(owner);
         uint256 amountToBeWithdrawed = (fullAmount * share) / totalShare;
+        console.log("converted share amount -->", amountToBeWithdrawed);
         return amountToBeWithdrawed;
     }
 }

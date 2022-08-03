@@ -65,24 +65,30 @@ describe("Pool", () => {
 		const amount = Web3.utils.toWei("2", "ether");
 		await dai.connect(addr1).approve(controller.address, amount);
 		await controller.connect(addr1)._deposit(amount);
-		//const userInfo = await pool.userData(addr1.address);
-
-		await dai.connect(owner).mint(amount, pool.address);
+		const userInfo = await pool.userData(addr1.address);
 		const poolBalance = await dai.balanceOf(pool.address);
 		const receiptBalance = await receiptToken.balanceOf(addr1.address);
 		console.log("pool balance after deposit", poolBalance.toString());
 		console.log("Addr1 receipt token -->", receiptBalance.toString())
-		//expect(userInfo.amount.toString()).equal(amount)
+		console.log("User Balance on contract -->", userInfo.amount.toString());
+		await dai.connect(addr1).approve(controller.address, amount);
+
 
 	})
-	/*
-		it("should withdraw predefined token and transfer to the owner initialAmount + interest", async () => {
-			const { receiptToken, pool, dai, owner, addr1, addr2, fund } = await loadFixture(deployContractFixture);
-			const amount = Web3.utils.toWei("2", "ether");
-			await pool.connect(addr1).deposit(amount);
-			await pool.connect(addr1).withdraw(amount, addr1.address);
-		})
-	*/
+
+	it("should withdraw predefined token and transfer to the owner initialAmount + interest", async () => {
+		const { receiptToken, pool, dai, owner, addr1, addr2, controller } = await loadFixture(deployContractFixture);
+		const amount = Web3.utils.toWei("2", "ether");
+		await dai.connect(addr1).approve(controller.address, amount);
+		await controller.connect(addr1)._deposit(amount);
+		const poolBalance = await dai.balanceOf(pool.address);
+		console.log("pool balance after deposit -->", poolBalance.toString());
+		await controller.connect(addr1)._withdraw(amount, addr1.address);
+		const poolBalance1 = await dai.balanceOf(pool.address);
+		console.log("pool balance after withdraw -->", poolBalance1.toString());
+
+	})
+
 
 
 })

@@ -35,22 +35,22 @@ contract Pool {
 @param amount - amount of predefined token
 */
 
-    function deposit(uint256 amount) public {
+    function deposit(uint256 amount, address owner) public {
         require(
-            underlying.balanceOf(msg.sender) >= amount,
+            underlying.balanceOf(owner) >= amount,
             "You don't have enough amount to withdraw"
         );
-        underlying.transfer(address(this), amount);
-        if (userData[msg.sender].isDeposited == true) {
-            uint256 initialAmount = userData[msg.sender].amount;
-            uint256 initialTime = userData[msg.sender].deposit_time;
+       // underlying.transfer(owner,address(this), amount);
+        if (userData[owner].isDeposited == true) {
+            uint256 initialAmount = userData[owner].amount;
+            uint256 initialTime = userData[owner].deposit_time;
             uint256 reward = calculateReward(initialAmount, initialTime);
             uint256 finalAmount = initialAmount + amount + reward;
-            userData[msg.sender] = userInfo(finalAmount, block.timestamp, true);
+            userData[owner] = userInfo(finalAmount, block.timestamp, true);
         } else {
-            userData[msg.sender] = userInfo(amount, block.timestamp, true);
+            userData[owner] = userInfo(amount, block.timestamp, true);
         }
-        receiptToken.mint(amount, msg.sender);
+        receiptToken.mint(amount, owner);
     }
 
     /*

@@ -63,10 +63,16 @@ describe("Pool", () => {
 		const amount = Web3.utils.toWei("2", "ether");
 		await dai.connect(addr1).approve(controller.address, amount);
 		await controller.connect(addr1)._deposit(amount);
-		const poolBalance = await dai.balanceOf(pool.address);
-		console.log("pool balance after deposit -->", poolBalance.toString());
+		const userInfo = await pool.userData(addr1.address);
+		expect(userInfo.amount.toString()).equal(amount);
+		const addr1ReceiptBalance = await receiptToken.balanceOf(addr1.address)
+		const addr1DaiBalance = await dai.balanceOf(addr1.address);
+		expect(addr1ReceiptBalance.toString()).equal(amount)
 		await controller.connect(addr1)._withdraw(amount, addr1.address);
-		const poolBalance1 = await dai.balanceOf(pool.address);
-		console.log("pool balance after withdraw -->", poolBalance1.toString());
+		const addr1DaiBalance1 = await dai.balanceOf(addr1.address);
+		expect(addr1DaiBalance1).above(addr1DaiBalance);
+		const userInfo1 = await pool.userData(addr1.address);
+		expect(userInfo1.amount.toString()).equal("0");
+		//console.log("pool balance after withdraw -->", poolBalance1.toString());
 	});
 });

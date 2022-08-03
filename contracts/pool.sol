@@ -72,13 +72,13 @@ contract Pool {
         userData[owner].amount += reward;
         console.log("calculated amount -->", userData[owner].amount);
         uint256 amountToWithdraw = calculareShare(amount, owner);
-         receiptToken.burn(amount, owner);
+        receiptToken.burn(amount, owner);
         userData[owner].amount -= amountToWithdraw;
         userData[owner].deposit_time = block.timestamp;
-if(userData[owner].amount == 0){
-userData[owner].isDeposited = false;
-}
-        underlying.transfer( owner, amountToWithdraw);
+        if (userData[owner].amount == 0) {
+            userData[owner].isDeposited = false;
+        }
+        underlying.transfer(owner, amountToWithdraw);
     }
 
     /*

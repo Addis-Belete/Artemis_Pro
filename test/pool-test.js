@@ -73,6 +73,5 @@ describe("Pool", () => {
 		expect(addr1DaiBalance1).above(addr1DaiBalance);
 		const userInfo1 = await pool.userData(addr1.address);
 		expect(userInfo1.amount.toString()).equal("0");
-		//console.log("pool balance after withdraw -->", poolBalance1.toString());
 	});
 });

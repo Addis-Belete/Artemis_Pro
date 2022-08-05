@@ -18,10 +18,13 @@ contract Pool {
     using SafeERC20 for IERC20;
     IERC20 public underlying; // any ERC20 predefined token
     IReceiptToken public receiptToken; //receipt token
+    address controllerAddress;
+    address _owner;
 
     constructor(address _predefinedTokenAddress, address receiptTokensAddress) {
         underlying = IERC20(_predefinedTokenAddress);
         receiptToken = IReceiptToken(receiptTokensAddress);
+        _owner = msg.sender;
     }
 
     struct userInfo {
@@ -30,6 +33,14 @@ contract Pool {
         bool isDeposited;
     }
     mapping(address => userInfo) public userData;
+    modifier onlyOwner() {
+        require(msg.sender == _owner, "Only owner can call");
+        _;
+    }
+    modifier onlyController() {
+        require(msg.sender == controllerAddress, "only called vai controller");
+        _;
+    }
 
     /*
 @dev - Is a function used to deposit predefined token to the contract
@@ -112,5 +123,9 @@ contract Pool {
         uint256 amountToBeWithdrawed = (fullAmount * share) / totalShare;
         console.log("converted share amount -->", amountToBeWithdrawed);
         return amountToBeWithdrawed;
+    }
+
+    function setController(address _controllerAddress) public onlyOwner {
+        controllerAddress = _controllerAddress;
     }
 }

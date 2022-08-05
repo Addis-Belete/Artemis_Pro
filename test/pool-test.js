@@ -60,6 +60,8 @@ describe("Pool", () => {
 	it("should deposit and withdraw predefined token and transfer to the owner initialAmount + interest", async () => {
 		const { receiptToken, pool, dai, owner, addr1, addr2, controller } =
 			await loadFixture(deployContractFixture);
+		await receiptToken.connect(owner).setPoolAddress(pool.address);
+		await pool.connect(owner).setController(controller.address)
 		const amount = Web3.utils.toWei("2", "ether");
 		await dai.connect(addr1).approve(controller.address, amount);
 		await controller.connect(addr1)._deposit(amount);

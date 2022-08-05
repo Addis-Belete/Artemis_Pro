@@ -19,11 +19,11 @@ contract receiptToken is ERC20 {
         _;
     }
 
-    function mint(uint256 amount, address to) public {
+    function mint(uint256 amount, address to) public onlyPool {
         _mint(to, amount);
     }
 
-    function burn(uint256 amount, address from) public {
+    function burn(uint256 amount, address from) public onlyPool{
         _burn(from, amount);
     }
 

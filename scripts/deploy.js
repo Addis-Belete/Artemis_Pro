@@ -13,12 +13,14 @@ async function main() {
 	const ReceiptToken = await ethers.getContractFactory("receiptToken");
 	const receiptToken = await ReceiptToken.deploy();
 	await receiptToken.deployed();
+	console.log("receipt token deployed to -->", receiptToken.address);
 	/*
 			Deploy predefined toke which is used for test purpose or to use instead of Real one.
 			*/
 	const DAI = await ethers.getContractFactory("DAIToken")
 	const dai = await DAI.deploy();
 	await dai.deployed();
+	console.log("predefined token deployed to -->", dai.address);
 
 	/*
 			Deploy Pool contract
@@ -27,6 +29,14 @@ async function main() {
 	const pool = await Pool.deploy(dai.address, receiptToken.address);
 	await pool.deployed();
 	console.log("pool deployed to -->", pool.address);
+
+	/*
+			Deploy controller
+			*/
+	const Controller = await ethers.getContractFactory("Controller");
+	const controller = await Controller.deploy(pool.address, dai.address);
+	await controller.deployed();
+	console.log("controller deployed to -->", controller.address);
 
 }
 

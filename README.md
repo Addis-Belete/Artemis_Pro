@@ -31,6 +31,14 @@ $ npm install
 ```
 
 ```
+## Instruction
+```
+
+- After deploying contracts set pool address in receipt token contract by using setPoolAddress function.
+- Set controller address in pool contract using setController function
+- Call \_deposit and \_withdraw function from controller contract to deposit and withdraw predefined token.
+
+```
 
 👤 **Addis Belete**
 

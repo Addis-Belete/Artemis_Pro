@@ -17,7 +17,7 @@ module.exports = {
 	},
 	networks: {
 		goerli: {
-			url: `https://eth-goerli.g.alchemy.com/v2/${ALCHEMY_API_KEY}`,
+			url: "https://eth-goerli.g.alchemy.com/v2/w4C79D6T9rlYgl6YyMsYJ8Whmi4bHMYy",
 			accounts: [`0x${GOERLI_PRIVATE_KEY}`]
 		}
 	}

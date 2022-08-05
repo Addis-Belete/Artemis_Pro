@@ -28,10 +28,11 @@ $ npm install
 - npm install
 - run npx hardhat node on terminal
 - run npx hardhat test test/pool-test.js
-```
 
 ```
+
 ## Instruction
+
 ```
 
 - After deploying contracts set pool address in receipt token contract by using setPoolAddress function.
@@ -65,4 +66,7 @@ Give a ⭐️ if you like this project!
 ## 📝 License
 
 This project is [MIT](./MIT.md) licensed.
+
+```
+
 ```
